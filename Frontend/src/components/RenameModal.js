@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
-  const [customName, setCustomName] = useState("");
-  const [companyCode, setCompanyCode] = useState("");
-  const [year, setYear] = useState("");
-  const [assemblyCode, setAssemblyCode] = useState("");
+const RenameModal = ({ isOpen, onClose, onRename, oldName }) => {
+  const [newYear, setNewYear] = useState("");
+  const [newCompanyCode, setNewCompanyCode] = useState("");
+  const [newAssemblyCode, setNewAssemblyCode] = useState("");
+  const [customFolderName, setCustomFolderName] = useState("");
   const [companies, setCompanies] = useState([]);
   const [assemblyCodes, setAssemblyCodes] = useState([]);
 
@@ -33,15 +33,16 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
     fetchAssemblyCodes();
   }, []);
 
-  const handleCreate = () => {
-    const parts = [customName, year, companyCode, assemblyCode].filter(Boolean);
-    const finalFolderName = parts.join("-") || "Untitled-Folder";
+  const handleRename = () => {
+    const newName = customFolderName
+      ? customFolderName
+      : `${newYear}-${newCompanyCode}-${newAssemblyCode}`;
 
-    onCreate(finalFolderName);
-    setCustomName("");
-    setCompanyCode("");
-    setYear("");
-    setAssemblyCode("");
+    onRename(oldName, newName);
+    setNewYear("");
+    setNewCompanyCode("");
+    setNewAssemblyCode("");
+    setCustomFolderName("");
     onClose();
   };
 
@@ -53,22 +54,22 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-30">
       <div className="bg-white p-6 rounded-lg max-w-sm w-full">
-        <h3 className="text-lg font-bold mb-4">Create New Folder</h3>
+        <h3 className="text-lg font-bold mb-4">Rename Folder</h3>
 
         <input
           type="text"
           placeholder="Custom Folder Name"
-          value={customName}
-          onChange={(e) => setCustomName(e.target.value)}
-          className="w-full p-3 mb-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          value={customFolderName}
+          onChange={(e) => setCustomFolderName(e.target.value)}
+          className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
         />
 
         <select
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          value={newYear}
+          onChange={(e) => setNewYear(e.target.value)}
           className="w-full p-3 mb-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
         >
-          <option value="">Select Year</option>
+          <option value="" disabled>Select Year</option>
           {years.map((yearOption) => (
             <option key={yearOption} value={yearOption}>
               {yearOption}
@@ -77,11 +78,11 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
         </select>
 
         <select
-          value={companyCode}
-          onChange={(e) => setCompanyCode(e.target.value)}
+          value={newCompanyCode}
+          onChange={(e) => setNewCompanyCode(e.target.value)}
           className="w-full p-3 mb-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
         >
-          <option value="">Select Company Code</option>
+          <option value="" disabled>Select Company Code</option>
           {companies.map((company) => (
             <option key={company.code} value={company.code}>
               {company.code} - {company.name}
@@ -90,11 +91,11 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
         </select>
 
         <select
-          value={assemblyCode}
-          onChange={(e) => setAssemblyCode(e.target.value)}
+          value={newAssemblyCode}
+          onChange={(e) => setNewAssemblyCode(e.target.value)}
           className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
         >
-          <option value="">Select Assembly Code</option>
+          <option value="" disabled>Select Assembly Code</option>
           {assemblyCodes.map((assembly) => (
             <option key={assembly.code} value={assembly.code}>
               {assembly.code} - {assembly.name}
@@ -110,10 +111,10 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
             Cancel
           </button>
           <button
-            onClick={handleCreate}
+            onClick={handleRename}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all"
           >
-            Create
+            Rename
           </button>
         </div>
       </div>
@@ -121,4 +122,4 @@ const FolderCreationModal = ({ isOpen, onClose, onCreate }) => {
   );
 };
 
-export default FolderCreationModal;
+export default RenameModal;
